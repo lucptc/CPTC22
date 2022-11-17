@@ -1,0 +1,116 @@
+====Enumeration====
+
+hostname- return hostname of target machine.
+
+uname -a- additional info about kernel used by system.
+
+cat /proc/version- info of target system processes.
+
+ps- see running processes on system.
+
+ps aux- procceses for all users. 
+
+cat /etc/issue- info about OS.
+
+cat /etc/hosts- useful host information, can manipulate hosts from cronjobs
+
+env- show environment variables.
+
+sudo -l- what privilages a current user has.
+
+sudo -V- checks what version of sudo is running on the machine.
+
+id- general overview of user privilage level
+
+getcap- tool to list enabled capabilities.
+getcap -r / 2>/dev/null
+
+====Using FIND Command==== 
+
+find- very useful too for locating files and permissions
+
+find / -type f -perm 0777: find files with the 777 permissions (files readable, writable, and executable by all users)
+
+find / -perm a=x: find executable files
+
+find /home -user frank: find all files for user “frank” under “/home”
+
+Command with “-type f 2>/dev/null” to redirect errors to “/dev/null” and have a cleaner output (below). 
+
+find / -writable -type d 2>/dev/null : Find world-writeable folders
+
+find / -type f -perm -04000 -ls 2>/dev/null will list files that have SUID or SGID bits set. ********
+
+find / -name perl*
+find / -name python*
+find / -name gcc*
+
+
+====Techniques====
+
+Priv Esc through sudo LD_PreLoad (Need sudo permission on one command)
+https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/
+
+tmp directory is very useful for dowloading exploits from host to target machine
+set /tmp directory on target machine before downloading.
+
+SUID and SGID
+
+GTFObins will show you binaries to privEsc with specific permissions.
+
+Capabilities help manage privileges at a more granular level.
+getcap -r / 2>/dev/null
+Looking for <Capability> = <refer to list>
+https://steflan-security.com/linux-privilege-escalation-exploiting-capabilities/
+
+Cron jobs are used to run scripts or binaries at specific times.
+Any user can read the file keeping system-wide cron jobs under
+cat /etc/crontab
+Do not have to ./ script if it is running (hence cronjobs are always running)
+
+PATH in Linux is an environmental variable that tells the operating system where to search for executables.
+You can manipulate the path at which to execute scripts with suid.
+echo $PATH
+export PATH=/directory:$PATH
+Now you can put a script in directory, execute script, spawn a root shell.
+Script needs to already exist with root permissions.
+
+NFS (Network File Sharing) configuration is kept in the /etc/exports file.
+Privilege escalation vector is the “no_root_squash” option.
+Can create an executable with SUID bit set and run it on the target system.
+Mount one of the “no_root_squash” shares.
+Compile code with SUID bit.
+Do this in /mnt directory unless no permission
+
+python library hijacking
+https://medium.com/analytics-vidhya/python-library-hijacking-on-linux-with-examples-a31e6a9860c8
+
+
+
+====Automatated Scripts==== 
+
+LinPeas: https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS
+LinEnum: https://github.com/rebootuser/LinEnum
+LES (Linux Exploit Suggester): https://github.com/mzet-/linux-exploit-suggester
+Linux Smart Enumeration: https://github.com/diego-treitos/linux-smart-enumeration
+Linux Priv Checker: https://github.com/linted/linuxprivchecker 
+
+---use wget for scripts--- 
+
+Do not use unless you are not being Stealthy
+
+====NOTES====
+
+Privilage Escalation is more of an art than a science.
+Be patient with enumeration of PrivEsc.
+
+-Look for files with SUID permissions.
+-Look for sudo privilages.
+-Compile code carefully to execute on target machine.
+-Use binaries with SUID to see /etc/shadow and /etc/passwd.
+-john is a good tool if hashes are caught. 
+-May need to use unshadow with both password files.^
+-May need to PrivEsc another user before root.
+-Pay attention and stay organzied.
+-Explore more PrivEsc methods.
+
