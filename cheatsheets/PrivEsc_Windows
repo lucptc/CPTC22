@@ -61,6 +61,10 @@ command: schtasks /run /tn <task> ///to run script
 
 Checking privs of current user: whoami /priv
 
+- whoami /priv
+- net user
+- net localgroup
+
 
 SeBackup and SeRestore privileges can be used to Esc
 
