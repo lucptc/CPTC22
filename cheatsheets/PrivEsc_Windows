@@ -65,8 +65,11 @@ Checking privs of current user: whoami /priv
 - net user
 - net localgroup
 
-
-SeBackup and SeRestore privileges can be used to Esc
+Popular PrivEsc Privileges
+SeBackup
+SeRestore
+SeImpersonate
+SeTakeOwnership
 
 The command below will dump information it can gather on installed software
 
