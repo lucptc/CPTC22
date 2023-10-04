@@ -82,3 +82,6 @@ Metasploit- multi/recon/local_exploit_suggester: can list priv esc methods to tr
 Unquotted Service PATHS
 https://medium.com/@SumitVerma101/windows-privilege-escalation-part-1-unquoted-service-path-c7a011a8d8ae
 
+Command to find Unquotted Paths
+wmic service get name,pathname,displayname,startmode | findstr /i auto | findstr /i /v "C:\Windows\\" | findstr /i /v """
+
