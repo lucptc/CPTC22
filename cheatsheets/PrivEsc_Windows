@@ -78,3 +78,7 @@ wmic product get name,version,vendor
 use winPEAS to scan for priv esc vectors 
 
 Metasploit- multi/recon/local_exploit_suggester: can list priv esc methods to try out
+
+Unquotted Service PATHS
+https://medium.com/@SumitVerma101/windows-privilege-escalation-part-1-unquoted-service-path-c7a011a8d8ae
+
