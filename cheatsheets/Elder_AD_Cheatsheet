@@ -17,3 +17,4 @@ sudo python3 secretsdump.py -just-dc <username>:<password>@<ip> # retrieve all o
  
 # Golden Tcket Attack (mimikatz)
 
+https://www.netwrix.com/how_golden_ticket_attack_works.html
