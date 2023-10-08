@@ -1,2 +1,2 @@
 # LUCPTC
-## Repo for Liberty University CPTC Team 2022
+## Repo for Liberty University CPTC Team 2023
