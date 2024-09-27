@@ -18,11 +18,10 @@ lookupsid <domain>/guest@<IP> 
 nmap -n -sV --script "ldap* and not brute" <IP> #Using anonymous credentials 
 
 Enum4linux 
+https://highon.coffee/blog/enum4linux-cheat-sheet/ 
 
-[enum4linux Cheat Sheet - Commands & Examples (highon.coffee)](https://highon.coffee/blog/enum4linux-cheat-sheet/) 
-
-rpcclient -U '' -N 
-
+RPCclient
+rpcclient -U '' -N (Anonymous authentication)
 https://www.hackingarticles.in/active-directory-enumeration-rpcclient/ 
 
 smbclient/smbmap
