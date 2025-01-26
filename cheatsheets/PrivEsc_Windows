@@ -81,6 +81,7 @@ Metasploit- multi/recon/local_exploit_suggester: can list priv esc methods to tr
 
 Unquotted Service PATHS
 https://github.com/nickvourd/Windows-Local-Privilege-Escalation-Cookbook/blob/master/Notes/UnquotedServicePath.md
+Use Start-Service or Stop-Service instead of sc
 
 Command to find Unquotted Paths
 wmic service get name,pathname,displayname,startmode | findstr /i auto | findstr /i /v "C:\Windows\\" | findstr /i /v """
